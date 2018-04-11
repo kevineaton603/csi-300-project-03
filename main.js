@@ -1,6 +1,7 @@
 const {app, BrowserWindow, ipcMain} = require('electron')
 const path = require('path')
 const url = require('url')
+const fs = require('fs')
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -59,4 +60,29 @@ app.on('activate', () => {
 ipcMain.on('tweet', (event, arg)=>{
   console.log(arg)
   win.webContents.send('update-timeline', arg);
+})
+
+ipcMain.on('new-user', (event,arg)=>{
+  console.log(arg);
+  win.webContents.send('account-created', arg);
+})
+
+/**
+ * Once the login has been validated then 
+ * users creditial are sent here where 
+ * they are written to a JSON file
+ * to be accessed later uses
+ */
+ipcMain.on('login-cred', (event,arg)=>{
+  console.log(arg);
+  var data = {}
+  arg.forEach(element => {
+    data[element.name] = element.value
+  });
+  data = JSON.stringify(data)
+  fs.writeFile(path.join(__dirname, 'user.json'), data, (err) => {  
+    if (err) throw err;
+    console.log('Data written to file');
+  });
+  win.webContents.send('login-confirmed', arg);
 })

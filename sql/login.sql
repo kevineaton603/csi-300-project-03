@@ -1,0 +1,1 @@
+SELECT `users`.`user_id` FROM `users` WHERE `users`.`username` = ? AND `users`.`password` = ?

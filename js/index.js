@@ -11,18 +11,20 @@ const connection = mysql.createConnection({
     password: '',
     database: 'twitter'
 })
-const timeline = "SELECT 1 is_rt, t.tweet_body, r.time_retweeted AS time_posted, u.name, u2.name AS og_tweeter FROM retweet AS r INNER JOIN tweet AS t ON t.tweet_id = r.tweet_id INNER JOIN users AS u ON r.user_id = u.user_id INNER JOIN users as u2 ON t.user_id = u2.user_id WHERE r.user_id IN ( SELECT users.user_id FROM users WHERE users.user_id IN ( SELECT followers.user_id FROM followers WHERE followers.follower_id = ? ) ) UNION SELECT 0, tweet.tweet_body, tweet.time_posted, users.name, null FROM users INNER JOIN tweet ON users.user_id = tweet.user_id WHERE tweet.user_id IN ( SELECT users.user_id FROM users WHERE users.user_id IN ( SELECT followers.user_id FROM followers WHERE followers.follower_id = ? ) ) ORDER BY time_posted"
 let win = electron.remote.getCurrentWindow()
-var sql = fs.readFileSync('sql/timeline.sql').toString();
+var user_id;
 /**
  * Gets init timeline on load up
  * and displays on page
+ * @param id: the id of the user (Default: 0)
+ * @return none
  */
-async function get_timeline()
+async function get_timeline(id=0)
 {
     try{
-        const timeline_results = await query(sql, [11,11,11,11]);
-        const user_results = await query('SELECT * FROM users WHERE users.user_id = ?', [11])
+        const timeline_query = await get_query('sql/timeline.sql')
+        const timeline_results = await query(timeline_query, [id,id,id,id]);
+        const user_results = await query('SELECT * FROM users WHERE users.user_id = ?', [id])
         var html = "";
         $('#timeline').html(html);
         timeline_results.forEach(element => {
@@ -31,7 +33,8 @@ async function get_timeline()
             {
                 html = element.name +" retweeted "+ element.og_tweeter +"'s tweet: " + element.tweet_body + "<br>"
             }
-            else{
+            else
+            {
                 html = element.name+" tweeted: "+element.tweet_body + "<br>"
             }
             $('#timeline').append(html)
@@ -43,7 +46,54 @@ async function get_timeline()
     }
     
 }
-
+async function get_user_info()
+{
+    const login = await get_query(path.join(__dirname, 'sql/login.sql'))
+    const login_info = await get_user_file(path.join(__dirname, 'user.json'))
+    const get_user_id = await query(login, [login_info['username'], login_info['password']])
+    return get_user_id[0]['user_id']
+}
+function login()
+{
+    const loginPath =  path.join('file://', __dirname, 'html/login.html')
+    let win = new BrowserWindow({frame: true, alwaysOnTop: true, /*width: 400, height: 200*/})
+    win.on('close', ()=>{win = null})
+    win.loadURL(loginPath)
+    win.show()
+}
+function get_user_file(filename)
+{
+    return new Promise((resolve, reject)=>{
+        fs.readFile(filename, (err, data) => {  
+            if (err){reject(err)};
+            if(data)
+            {
+                data = JSON.parse(data)
+                resolve(data)
+            }
+            else{
+                reject(0)
+            }
+          });
+    })
+}
+function get_query(filename)
+{
+    return new Promise((resolve, reject)=>{
+        fs.readFile(filename, (err, data)=>{
+            if(err) {reject(err)};
+            if(data)
+            {
+                data = data.toString()
+                resolve(data)
+            }
+            else{
+                reject(0)
+            }
+            
+        })
+    })
+}
 function query(sql, values=[])
 {
     return new Promise((resolve, reject)=>{
@@ -53,7 +103,6 @@ function query(sql, values=[])
             }, 
             function (error, results, fields) {
             if (error){ reject(error); }
-            //console.log(results)
             resolve(results);
         });
     })
@@ -61,34 +110,39 @@ function query(sql, values=[])
 //MAIN FUNCTION
 $(document).ready(()=>{
     connection.connect();
-    get_timeline()
+    //Needs to be test against if invalid information is held with json packet
+    get_user_info().then((results)=>{
+        get_timeline(results);
+        user_id = results;
+    })
     $('#tweet').on('click', ()=>{
-        //console.log("hello world");
         const modalPath = path.join('file://', __dirname, 'html/tweet.html')
-        let win = new BrowserWindow({frame: true, alwaysOnTop: true, /*width: 400, height: 200*/})
+        let win = new BrowserWindow({frame: true, alwaysOnTop: true, width: 400, height: 200})
         win.on('close', ()=>{win = null})
         win.loadURL(modalPath)
         win.show()
     })
     $('#reload-timeline').on('click', ()=>{
-        get_timeline()
+        get_timeline(user_id)
+    })
+    $('#login').on('click',()=>{
+        login()
     })
 })
 //IPC PROCESSES
 ipcRenderer.on('update-timeline', (event,arg)=>{
-    values = [11,arg[0]['value']]
+    values = [user_id,arg[0]['value']]
     connection.query({
         sql: "INSERT INTO `tweet`(`user_id`, `time_posted`, `tweet_body`) VALUES (?, (SELECT NOW()), ?)",
         values: values
         }, 
         function (error, results, fields) {
         if (error){ throw(error); }
-        console.log(results)
     });
-    console.log();
-    get_timeline()
+    get_timeline(user_id)
 })
 
+//WINDOW PROCESS
 win.on('close', ()=>{
     connection.end();
 })
