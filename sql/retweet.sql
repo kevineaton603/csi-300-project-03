@@ -1,0 +1,1 @@
+INSERT INTO `retweet`(`tweet_id`, `user_id`, `time_retweeted`) VALUES (?,?,(SELECT NOW()))

@@ -1,0 +1,1 @@
+INSERT INTO followers(follower_id, user_id) VALUES (?,?);
