@@ -86,3 +86,7 @@ ipcMain.on('login-cred', (event,arg)=>{
   });
   win.webContents.send('login-confirmed', arg);
 })
+
+ipcMain.on('user-info', (event, arg)=>{
+
+})
