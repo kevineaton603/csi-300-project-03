@@ -109,7 +109,6 @@ function launch_login()
 var user = new User();
 //MAIN FUNCTION
 $(document).ready(()=>{
-    
     login_async().then((results)=>{
         if(results != -1)
         {
@@ -123,7 +122,7 @@ $(document).ready(()=>{
                 console.log( user.favorites, user.retweets);
                 
                 get_timeline(user.user_id).then((timeline_results)=>{
-                    setTweetAttr()
+                    setTweetAttr(user)
                 });
             });
             find_new_followers(user_id).then((results)=>{
@@ -148,11 +147,16 @@ $(document).ready(()=>{
     })
     $('#reload-timeline').on('click', ()=>{
         get_timeline(user_id).then((timeline_results)=>{
-            setTweetAttr()
+            setTweetAttr(user)
         });
     })
     $('#login').on('click',()=>{
         launch_login()
+    })
+    $('.profile').on('click', function(event){
+        event.preventDefault()
+        ipcRenderer.send('user-info', [user.user_id, user.user_id]);
+        window.location.replace(path.join(__dirname, "/html/profile.html"));
     })
 })
 //IPC PROCESSES
@@ -166,7 +170,7 @@ ipcRenderer.on('update-timeline', (event,arg)=>{
         if (error){ throw(error); }
     });
     get_timeline(user_id).then((timeline_results)=>{
-        setTweetAttr()
+        setTweetAttr(user)
     });
 })
 

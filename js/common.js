@@ -10,10 +10,10 @@ const connection = mysql.createConnection({
 });
 class User
 {
-    constructor()
+    constructor(user_id = -1)
     {
         this.is_logged_in = false
-        this.user_id = -1
+        this.user_id = user_id
         this.favorites = new Array();
         this.retweets = new Array();
         this.followers = new Array();
@@ -135,40 +135,41 @@ async function favorite(tweet_id, user_id)
     const favorite = await query(favorite_sql, [tweet_id, user_id]);
     return favorite;
 }
-function setTweetAttr()
-{
+function setTweetAttr(user)
+{    
     $('.retweet').on('click', function(event){
-        
-        console.log(event.target.attributes[1].value, user.retweets);
-        
-        
         tweet_id = parseInt(event.target.attributes[1].value);
+        var rt = $("[data-rt='"+tweet_id+"']")
         
         if(!user.retweets.includes(tweet_id))
         {
             //retweet(tweet_id, user_id);
             //user.retweets.push(tweet_id);
-            event.target.innerText = "UNRETWEET";
-            console.log("Retweeted!!");
+            $(rt).each( function(event){
+                $(this).html("UNRETWEET")
+            })
         }
         else{
             //We want to delete retweet here
             //unretweet(tweet_id, user_id);
             //index = user.favorites.indexOf(tweet_id);
             //user.favorite.splice(index, 1);
-            var unrt = $("[data-rt='"+tweet_id+"']")
-            $(unrt).each( function(event){
+            $(rt).each( function(event){
                 $(this).html("RETWEET")
             })
         }
     })
     $('.favorite').on('click', function(event){
         tweet_id = parseInt(event.target.attributes[1].value)
+        var fav = $("[data-fav='"+tweet_id+"']")
+        
         if(!user.favorites.includes(tweet_id))
         {
             //favorite(tweet_id, user_id);
             //user.favorites.push(tweet_id);
-            event.target.innerHTML = "UNFAVORITE";
+            $(fav).each( function(event){
+                $(this).html("UNFAVORITE")
+            })
         }
         else{
             //We want to delete favorite here
@@ -176,9 +177,7 @@ function setTweetAttr()
             //unfavorite(tweet_id, user_id);
             //index = user.favorites.indexOf(tweet_id);
             //user.favorite.splice(index, 1);
-            var unfav = $("[data-fav='"+tweet_id+"']")
-            $(unfav).each( function(event){
-                console.log($(this));
+            $(fav).each( function(event){
                 $(this).html("FAVORITE")
             })
         }

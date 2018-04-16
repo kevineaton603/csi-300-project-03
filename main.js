@@ -86,7 +86,15 @@ ipcMain.on('login-cred', (event,arg)=>{
   });
   win.webContents.send('login-confirmed', arg);
 })
-
+var profileID = null;
+var currentID = null;
 ipcMain.on('user-info', (event, arg)=>{
+  console.log(arg);
+  currentID = arg[0];
+  profileID = arg[1];
+})
 
+ipcMain.on("get-info", (event, arg)=>{
+  win.webContents.send('profile-info', profileID)
+  event.returnValue = [currentID, profileID];
 })
