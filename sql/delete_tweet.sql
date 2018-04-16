@@ -1,0 +1,1 @@
+DELETE FROM tweet WHERE tweet_id = ?
