@@ -20,6 +20,9 @@ async function get_timeline(id=0)
         console.log(timeline_results);
         console.log(user)
         timeline_results.forEach(element => {
+            var delete_div = "<button class ='delete'   data-del =" + element.tweet_id + ">" + "DELETE" + "</button>";
+            var fav_btn    = "<button class ='favorite' data-fav =" + element.tweet_id + ">" + (user.favorites.includes(element.tweet_id) ? "UNFAVORITE":"FAVORITE") + "</button>"
+            var rt_btn     = "<button class ='retweet'  data-rt  =" + element.tweet_id + ">" + (user.retweets.includes(element.tweet_id)  ? "UNRETWEET" :"RETWEET" ) + "</button>"
             if(element.is_rt)
             {
                 html = "<div class='tweet' data='"
@@ -34,14 +37,8 @@ async function get_timeline(id=0)
                         + "<div class='tweet_body'>"
                             + element.tweet_body
                         + "</div>"
-                        + "<div class='retweet' data-rt="
-                            + element.tweet_id 
-                        + ">" + (user.retweets.includes(element.tweet_id) ? "UNRETWEET":"RETWEET") 
-                        + "</div>"
-                        + "<div class='favorite' data-fav="
-                            + element.tweet_id 
-                        + ">" + (user.favorites.includes(element.tweet_id) ? "UNFAVORITE":"FAVORITE")
-                        +"</div>"
+                        + rt_btn
+                        + fav_btn
                     + "</div>"
             }
             else
@@ -55,14 +52,8 @@ async function get_timeline(id=0)
                         + "<div class='tweet_body'>"
                             + element.tweet_body
                         + "</div>"
-                        + "<div class='retweet' data-rt='"
-                            + element.tweet_id 
-                        + "'>" + (user.retweets.includes(element.tweet_id) ? "UNRETWEET":"RETWEET") 
-                        + "</div>"
-                        + "<div class='favorite' data-fav='"
-                            + element.tweet_id 
-                        + "'>" + (user.favorites.includes(element.tweet_id) ? "UNFAVORITE":"FAVORITE")
-                        +"</div>"
+                        + rt_btn
+                        + fav_btn
                     + "</div>"
             }
             $('#timeline').append(html)
@@ -81,8 +72,9 @@ async function find_new_followers(user_id)
     var html = "";
     $('#follow').html(html);
     new_users.forEach(element => {
-        //console.log(element);
-        html += "<div class='follow'>"
+        html += "<div class='follow' data-profile='"
+                + element.user_id
+                + "'>"
                     +"<div class='profile'>"
                     + element.name
                     + ": " 
@@ -127,10 +119,18 @@ $(document).ready(()=>{
             });
             find_new_followers(user_id).then((results)=>{
                 $('.to_follow').click(function(event){
-                    follow(user_id, event.target.attributes[0].value).then((results)=>{
+                    var data = parseInt($(this).attr('data-follow'));
+                    console.log(data);
+                    
+                    follow(user_id, data).then((results)=>{
                         console.log(results);
                         console.log("USER_ID: ",user_id, "\t now follows: ", event.target.id);
                     })
+                })
+                $(".follow").on('click', function(event){
+                    profileID = parseInt($(this).attr('data-profile'));
+                    ipcRenderer.send('user-info', [user.user_id, profileID]);
+                    window.location.replace(path.join(__dirname, "/html/profile.html"));
                 })
             })
         }

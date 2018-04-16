@@ -1,0 +1,1 @@
+DELETE FROM ?? WHERE tweet_id = ? AND user_id = ?

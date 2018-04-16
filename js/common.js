@@ -113,7 +113,7 @@ async function login_async()
 }
 async function follow(user_id, id)
 {
-    const follow_sql = await fileToStr(path.join(__dirname, 'sql/follow.sql'));
+    const follow_sql = await fileToStr('sql/follow.sql');
     const follow = await query(follow_sql, [user_id, id]);
     return follow;
 }
@@ -131,9 +131,32 @@ async function retweet(tweet_id, user_id)
 }
 async function favorite(tweet_id, user_id)
 {   
-    const favorite_sql = await fileToStr(path.join(__dirname, 'sql/favorite.sql'));
+    const favorite_sql = await fileToStr('sql/favorite.sql');
     const favorite = await query(favorite_sql, [tweet_id, user_id]);
     return favorite;
+}
+
+/**
+ * 
+ * @param {str} table 
+ * @param {int} tweet_id 
+ * @param {int} user_id 
+ */
+async function make_delete(table, tweet_id, user_id)
+{   
+    const delete_sql = await fileToStr('sql/delete_fav_rt.sql');
+    const delete_results = await query(delete_sql, [table, tweet_id, user_id]);
+    return delete_results;
+}
+async function delete_tweet(tweet_id)
+{   
+    const delete_sql = await fileToStr('sql/delete_tweet.sql');
+    const delete_results = await query(delete_sql, [tweet_id]);
+    return delete_results;
+}
+async function delete_user(user_id)
+{
+
 }
 function setTweetAttr(user)
 {    
@@ -143,17 +166,17 @@ function setTweetAttr(user)
         
         if(!user.retweets.includes(tweet_id))
         {
-            //retweet(tweet_id, user_id);
-            //user.retweets.push(tweet_id);
+            retweet(tweet_id, user.user_id);
+            user.retweets.push(tweet_id);
             $(rt).each( function(event){
                 $(this).html("UNRETWEET")
             })
         }
         else{
             //We want to delete retweet here
-            //unretweet(tweet_id, user_id);
-            //index = user.favorites.indexOf(tweet_id);
-            //user.favorite.splice(index, 1);
+            make_delete("retweet", tweet_id, user.user_id);
+            index = user.retweets.indexOf(tweet_id);
+            user.retweets.splice(index, 1);
             $(rt).each( function(event){
                 $(this).html("RETWEET")
             })
@@ -162,24 +185,40 @@ function setTweetAttr(user)
     $('.favorite').on('click', function(event){
         tweet_id = parseInt(event.target.attributes[1].value)
         var fav = $("[data-fav='"+tweet_id+"']")
-        
         if(!user.favorites.includes(tweet_id))
         {
-            //favorite(tweet_id, user_id);
-            //user.favorites.push(tweet_id);
+            favorite(tweet_id, user.user_id);
+            user.favorites.push(tweet_id);
             $(fav).each( function(event){
                 $(this).html("UNFAVORITE")
             })
         }
         else{
             //We want to delete favorite here
-            console.log("Already Favorited!!");
-            //unfavorite(tweet_id, user_id);
-            //index = user.favorites.indexOf(tweet_id);
-            //user.favorite.splice(index, 1);
+            make_delete("favorite", tweet_id, user.user_id);
+            index = user.favorites.indexOf(tweet_id);
+            user.favorites.splice(index, 1);
             $(fav).each( function(event){
                 $(this).html("FAVORITE")
             })
+        }
+        
+    })
+    $('.delete').on('click', function(event){
+        //console.log($(this).attr('data-del'));
+        tweet_id = parseInt($(this).attr('data-del'));
+        delete_tweet(tweet_id);
+        var del = $("[data='"+tweet_id+"']")
+        del.remove();
+        index = user.retweets.indexOf(tweet_id);
+        if(index != -1)
+        {
+            user.retweets.splice(index, 1);
+        }
+        index = user.favorites.indexOf(tweet_id);
+        if(index != -1)
+        {
+            user.favorites.splice(index, 1);
         }
         
     })

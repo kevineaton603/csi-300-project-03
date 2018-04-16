@@ -8,7 +8,6 @@ var current_user = new User();
 async function get_user_timeline(user, cur_user_profile = false)
 {
     id = user.user_id;
-    
     try{
         
         const timeline_query = await fileToStr('sql/user_timeline.sql')
@@ -16,7 +15,9 @@ async function get_user_timeline(user, cur_user_profile = false)
         var html = "";
         $('#timeline').html(html);
         timeline_results.forEach(element => {
-            var delete_div = "<div class='delete' data-fav=" + element.tweet_id + ">" + "DELETE" +"</div>";
+            var delete_div = "<button class='delete' data-del=" + element.tweet_id + ">" + "DELETE" +"</button>";
+            var fav_btn = "<button class='favorite' data-fav=" + element.tweet_id + ">" + (user.favorites.includes(element.tweet_id) ? "UNFAVORITE":"FAVORITE") + "</button>"
+            var rt_btn = "<button class='retweet' data-rt=" + element.tweet_id  + ">" + (user.retweets.includes(element.tweet_id) ? "UNRETWEET":"RETWEET") + "</button>"
             if(element.is_rt)
             {
                 html = "<div class='tweet' data='"
@@ -31,15 +32,9 @@ async function get_user_timeline(user, cur_user_profile = false)
                         + "<div class='tweet_body'>"
                             + element.tweet_body
                         + "</div>"
-                        + "<div class='retweet' data-rt="
-                            + element.tweet_id 
-                        + ">" + (user.retweets.includes(element.tweet_id) ? "UNRETWEET":"RETWEET") 
-                        + "</div>"
-                        + "<div class='favorite' data-fav="
-                            + element.tweet_id 
-                        + ">" + (user.favorites.includes(element.tweet_id) ? "UNFAVORITE":"FAVORITE")
-                        +"</div>"
-                        + (cur_user_profile ? delete_div : null)
+                        + rt_btn
+                        + fav_btn
+                        + cur_user_profile ? delete_div : ""
                     + "</div>"
             }
             else
@@ -53,15 +48,9 @@ async function get_user_timeline(user, cur_user_profile = false)
                         + "<div class='tweet_body'>"
                             + element.tweet_body
                         + "</div>"
-                        + "<div class='retweet' data-rt='"
-                            + element.tweet_id 
-                        + "'>" + (user.retweets.includes(element.tweet_id) ? "UNRETWEET":"RETWEET") 
-                        + "</div>"
-                        + "<div class='favorite' data-fav='"
-                            + element.tweet_id 
-                        + "'>" + (user.favorites.includes(element.tweet_id) ? "UNFAVORITE":"FAVORITE")
-                        +"</div>"
-                        + (cur_user_profile ? delete_div : null)
+                        + rt_btn
+                        + fav_btn
+                        + (cur_user_profile ? delete_div : "")
                     + "</div>"
             }
             $('#timeline').append(html)
@@ -138,23 +127,17 @@ async function get_user_info(user)
         console.error(err);
     }
 }
-function forEachPush(newArr = [], oldArr = [])
-{
-
-}
 $(document).ready(()=>{
     info = ipcRenderer.sendSync('get-info', null);
-    user.user_id = 21
     current_user.user_id = info[0]
+    user.user_id = info[1]
     if(user.user_id == current_user.user_id)
     {
-        console.log("True");
-        
         get_user_info(current_user).then((results)=>{
             current_user.is_logged_in = true;
             get_user_info(user).then((results)=>{
                 get_followers(user, true).then((results)=>{
-        
+                    
                 })
                 get_following(user,true).then((results)=>{
         
