@@ -23,7 +23,7 @@ If you have a root password for mysql you must modify: `js/common.js` and `js/lo
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '[INSERT PASSWORD]',
+    password: '', // Insert your root password here
     database: 'twitter'
 });
 ```
