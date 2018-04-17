@@ -8,9 +8,9 @@ A twitter clone for CSI-300-01
 
 * Electron  
     `npm install electron`
-* MySQL
+* MySQL  
     `npm install mysql`
-* jQuery
+* jQuery  
     `npm install jquery`
 
 ## Running
