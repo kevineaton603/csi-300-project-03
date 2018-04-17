@@ -21,14 +21,14 @@ async function get_timeline(id=0)
         console.log(user)
         timeline_results.forEach(element => {
             var delete_div = "<button class ='delete'   data-del =" + element.tweet_id + ">" + "DELETE" + "</button>";
-            var fav_btn    = "<button class ='favorite' data-fav =" + element.tweet_id + ">" + (user.favorites.includes(element.tweet_id) ? "UNFAVORITE":"FAVORITE") + "</button>"
-            var rt_btn     = "<button class ='retweet'  data-rt  =" + element.tweet_id + ">" + (user.retweets.includes(element.tweet_id)  ? "UNRETWEET" :"RETWEET" ) + "</button>"
+            var fav_btn    = "<button class ='favorite' data-fav =" + element.tweet_id + ">" + (user.favorites.includes(element.tweet_id) ? "<i class='fas fa-heart favorited'></i>":"<i class='far fa-heart favorite'></i>") + "</button>"
+            var rt_btn     = "<button class ='retweet'  data-rt  =" + element.tweet_id + ">" + (user.retweets.includes(element.tweet_id)  ? "<i class='fas fa-retweet retweeted'></i>" :"<i class='fas fa-retweet retweet'></i>" ) + "</button>"
             if(element.is_rt)
             {
                 html = "<div class='tweet' data='"
                     + element.tweet_id 
                     + "'>"
-                        + "<div class='retweeter'>"
+                        + "<div class='retweeter'><i class='fas fa-retweet retweet'></i> "
                             + element.name + " retweeted"
                         + "</div>"
                         + "<div class='name'>"
@@ -75,14 +75,14 @@ async function find_new_followers(user_id)
         html += "<div class='follow' data-profile='"
                 + element.user_id
                 + "'>"
-                    +"<div class='profile'>"
+                    +"<div class='profile'><span class='user-name'>"
                     + element.name
-                    + ": " 
+                    + "</span>: @" 
                     + element.username 
                     + "</div>"
                     + "<div data-follow='"
                     + element.user_id
-                    + "' class='to_follow'> FOLLOW"
+                    + "' class='to_follow'> <span class='text'>FOLLOW</span>"
                     + "</div>"
                 +"</div>"
                 

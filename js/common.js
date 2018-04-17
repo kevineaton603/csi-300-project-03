@@ -161,7 +161,7 @@ async function delete_user(user_id)
 function setTweetAttr(user)
 {    
     $('.retweet').on('click', function(event){
-        tweet_id = parseInt(event.target.attributes[1].value);
+        tweet_id = parseInt(event.target.parentElement.attributes[1].value);
         var rt = $("[data-rt='"+tweet_id+"']")
         
         if(!user.retweets.includes(tweet_id))
@@ -169,7 +169,7 @@ function setTweetAttr(user)
             retweet(tweet_id, user.user_id);
             user.retweets.push(tweet_id);
             $(rt).each( function(event){
-                $(this).html("UNRETWEET")
+                $(this).html("<i class='fas fa-retweet retweeted'></i>")
             })
         }
         else{
@@ -178,19 +178,19 @@ function setTweetAttr(user)
             index = user.retweets.indexOf(tweet_id);
             user.retweets.splice(index, 1);
             $(rt).each( function(event){
-                $(this).html("RETWEET")
+                $(this).html("<i class='fas fa-retweet'></i>")
             })
         }
     })
     $('.favorite').on('click', function(event){
-        tweet_id = parseInt(event.target.attributes[1].value)
+        tweet_id = parseInt(event.target.parentElement.attributes[1].value)
         var fav = $("[data-fav='"+tweet_id+"']")
         if(!user.favorites.includes(tweet_id))
         {
             favorite(tweet_id, user.user_id);
             user.favorites.push(tweet_id);
             $(fav).each( function(event){
-                $(this).html("UNFAVORITE")
+                $(this).html("<i class='fas fa-heart favorited'></i>")
             })
         }
         else{
@@ -199,7 +199,7 @@ function setTweetAttr(user)
             index = user.favorites.indexOf(tweet_id);
             user.favorites.splice(index, 1);
             $(fav).each( function(event){
-                $(this).html("FAVORITE")
+                $(this).html("<i class='far fa-heart'></i>")
             })
         }
         

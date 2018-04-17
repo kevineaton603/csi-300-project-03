@@ -1,5 +1,138 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body {
-    font-family: 'Roboto', sans-serif
+    font-family: 'Roboto', sans-serif;
+    background: #E6ECF0;
+}
+
+nav {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 46px;
+
+    flex-direction: row;
+    width: 100vw;
+    justify-content: space-around;
+    align-items: center;
+
+    background: white;
+    border-bottom: 1px solid rgba(0,0,0,0.25);
+}
+
+#container {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    margin: 0 auto;
+
+    top: 56px;
+    width: 80vw;
+}
+
+#container button {
+    border: none;
+    background: inherit;
+}
+
+#timeline {
+    position: relative;
+    flex-direction: column;
+    min-width: 500px;
+    width: calc(80vw - 500px);
+
+    margin: 0 20px;
+}
+
+.tweet {
+    padding: 5px 5px;
+    border-width: 90%;
+    border-bottom: 1px solid gainsboro;
+    background: white;
+}
+
+.tweet .retweeter {
+    color: #657786;
+    font-size: 12px;
+}
+
+.tweet .name {
+    color: #14171a;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+
+.retweet:hover {
+    color: #17BF63;
+}
+
+.favorite:hover {
+    color: #E0245E;
+}
+
+.retweeted {
+    color: #17BF63;
+}
+
+.favorited {
+    color: #E0245E;
+}
+
+#user {
+    background: white;
+    width: 350px;
+    height: 150px;
+}
+
+#follow {
+    background: white;
+    width: 300px;
+    padding-top: 10px;
+}
+
+.follow {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    margin: 2px 25px;
+    padding-bottom: 5px;
+
+    width: 250px;
+    border-bottom: 1px solid gainsboro;
+}
+
+.follow .profile {
+    font-size: 0.85em;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    color: #677987;
+}
+
+.follow .user-name{
+    color: black;
+    font-size: 1.1em;
+}
+
+.follow .to_follow {
+    display: flex;
+    height: 20px;
+    border-radius: 100px;
+    width: 100px;
+    align-content: center;
+    justify-content: center;
+    border: 1px solid #0084B4;
+
+    font-size: 0.85em;
+}
+
+.to_follow .text {
+    display: flex;
+    align-self: center;
+}
+
+.follow .to_follow:hover {
+    background-color: #E5F2F7
 }
