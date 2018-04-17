@@ -82,7 +82,7 @@ async function find_new_followers(user_id)
                     + "</div>"
                     + "<div data-follow='"
                     + element.user_id
-                    + "' class='to_follow'> <span class='text'>FOLLOW</span>"
+                    + "' class='to_follow'> <span class='text'>Follow</span>"
                     + "</div>"
                 +"</div>"
                 

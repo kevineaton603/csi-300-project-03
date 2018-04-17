@@ -131,6 +131,9 @@ nav {
 .to_follow .text {
     display: flex;
     align-self: center;
+    font-size: .8em;
+    font-weight: bold;
+    color: #0084B4;
 }
 
 .follow .to_follow:hover {
