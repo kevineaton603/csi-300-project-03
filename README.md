@@ -7,11 +7,11 @@ A twitter clone for CSI-300-01
 ## Dependencies
 
 * Electron  
-    > `npm install electron`
+    `npm install electron`
 * MySQL
-    > `npm install mysql`
+    `npm install mysql`
 * jQuery
-    > `npm install jquery`
+    `npm install jquery`
 
 ## Running
 
