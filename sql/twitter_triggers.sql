@@ -26,6 +26,10 @@ SET time_zone = "+00:00";
 -- Table structure for table `favorite`
 --
 
+DROP DATABASE IF EXISTS twitter;
+CREATE DATABASE twitter;
+USE twitter;
+
 CREATE TABLE `favorite` (
   `favorite_id` int(11) NOT NULL,
   `tweet_id` int(11) NOT NULL,
