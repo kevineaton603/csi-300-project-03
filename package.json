@@ -16,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/kevineaton603/csi-300-project-03/issues"
   },
-  "homepage": "https://github.com/kevineaton603/csi-300-project-03#readme"
+  "homepage": "https://github.com/kevineaton603/csi-300-project-03#readme",
+  "dependencies": {
+    "electron": "^1.8.4",
+    "jquery": "^3.3.1",
+    "mysql": "^2.15.0",
+    "npm": "^5.8.0"
+  }
 }
