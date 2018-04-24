@@ -12,35 +12,41 @@ class User
 {
     constructor(user_id = -1)
     {
-        this.is_logged_in = false
-        this.user_id = user_id
+        this.is_logged_in = false;
+        this.user_id = user_id;
+        this.username = "";
+        this.name = "";
         this.favorites = new Array();
         this.retweets = new Array();
         this.followers = new Array();
         this.following = new Array();
+        this.tweets = new Array();
         this.file = "user.json"
     }
 }
-async function get_info(user_id){
+async function get_user_info(user)
+{
     try{
-        rt_array = new Array("tweet_id", "retweet", "user_id", user_id)
-        fav_array = new Array("tweet_id", "favorite", "user_id", user_id)
-        results = {
-            "retweet":new Array(),
-            "favorite":new Array()
-        }
-        const info_sql = await fileToStr(path.join(__dirname, 'sql/get_info.sql'))
-        const favorite = await query(info_sql, fav_array)
-        const retweet = await query(info_sql, rt_array)
+        rt_array            = new Array("tweet_id",  "retweet", "user_id", user.user_id)
+        fav_array           = new Array("tweet_id", "favorite", "user_id", user.user_id)
+        follower_array      = new Array("follower_id", "user_id", user.user_id)
+        following_array     = new Array("user_id", "follower_id", user.user_id)
+        const info_sql      = await fileToStr(path.join(__dirname, 'sql/get_info.sql'))
+        const follow_sql    = await fileToStr(path.join(__dirname, 'sql/followers.sql'))
+        const tweets_sql    = await fileToStr('sql/num_of_tweets.sql')
+        const num_of_tweets = await query(tweets_sql, [user.user_id])
+        const favorite      = await query(info_sql, fav_array)
+        const retweet       = await query(info_sql, rt_array)
+        user.followers      = await query(follow_sql, follower_array)
+        user.following      = await query(follow_sql, following_array)
+        user.tweets = num_of_tweets[0][0].num
         favorite.forEach(element => {
-            results.favorite.push(element.tweet_id)
+            user.favorites.push(element.tweet_id)
         });
         retweet.forEach(element => {
-            results.retweet.push(element.tweet_id)
+            user.retweets.push(element.tweet_id)
         });
-        
-        console.log(results);
-        return results;
+        return true;
     }
     catch(err)
     {
@@ -101,7 +107,7 @@ async function login_async()
         const validate_user = await query(login_sql, [login_info['username'], login_info['password']])
         if(validate_user.length == 1)
         {
-            return validate_user[0]['user_id'];
+            return validate_user[0];
         }
         else{
             return -1;
@@ -222,4 +228,27 @@ function setTweetAttr(user)
         }
         
     })
+}
+function setUserAttr(user)
+{
+    console.log(user);
+    
+    var html = "<div id='profile-name'>"
+            + user.name
+            + "</div>"
+            + "<div id='profile-username'>@"
+            + user.username
+            + "</div>"
+            + "<div id='profile-follower'>Followers<br>"
+            + user.followers.length
+            + "</div>"
+            + "<div id='profile-following'>Following<br>"
+            + user.following.length
+            + "</div>"
+            + "<div id='profile-tweets'>Tweets<br>"
+            + user.tweets
+            + "</div>";
+    console.log(html);
+    
+    $("#user").html(html)
 }
