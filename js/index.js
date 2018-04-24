@@ -158,6 +158,8 @@ $(document).ready(()=>{
         ipcRenderer.send('user-info', [user.user_id, user.user_id]);
         window.location.replace(path.join(__dirname, "/html/profile.html"));
     })
+    // Timeline styling
+    
 })
 //IPC PROCESSES
 ipcRenderer.on('update-timeline', (event,arg)=>{
@@ -178,3 +180,4 @@ ipcRenderer.on('update-timeline', (event,arg)=>{
 win.on('close', ()=>{
 
 })
+

@@ -15,7 +15,7 @@ async function get_user_timeline(user, cur_user_profile = false)
         var html = "";
         $('#timeline').html(html);
         timeline_results.forEach(element => {
-            var delete_div = "<button class='delete' data-del=" + element.tweet_id + ">" + "DELETE" +"</button>";
+            var delete_div = "<button class='delete' data-del=" + element.tweet_id + ">" + "<i class='far fa-times-circle'></i>" +"</button>";
             var fav_btn = "<button class='favorite' data-fav=" + element.tweet_id + ">" + (user.favorites.includes(element.tweet_id) ? "<i class='fas fa-heart favorited'></i>":"<i class='far fa-heart favorite'></i>") + "</button>"
             var rt_btn = "<button class='retweet' data-rt=" + element.tweet_id  + ">" + (user.retweets.includes(element.tweet_id) ? "<i class='fas fa-retweet retweeted'></i>":"<i class='fas fa-retweet'></i>") + "</button>"
             if(element.is_rt)
