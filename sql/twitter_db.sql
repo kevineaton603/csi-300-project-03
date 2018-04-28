@@ -15,6 +15,10 @@ USE `twitter`;
 -- Database: `twitter`
 --
 
+DROP DATABASE IF EXISTS twitter;
+CREATE DATABASE twitter;
+USE twitter;
+
 DELIMITER $$
 --
 -- Procedures
