@@ -184,3 +184,8 @@ $(document).ready(()=>{
 ipcRenderer.on('profile-info', (event,arg)=>{
     console.log(arg)
 })
+
+//WINDOW PROCESS
+win.on('close', ()=>{
+    win = null;
+})
