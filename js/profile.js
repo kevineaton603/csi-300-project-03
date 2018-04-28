@@ -83,13 +83,18 @@ async function get_following(user, cur_user_profile = false)
 {
     try{
         var html = "";
+        
+        console.log(user.following);
+        
         user.following.forEach(element => {
+            var unfollow = "<div class='unfollow' user-id='"+element.user_id+"'>"+"unfollow"+"</div>"
             html += "<div class='follow'>"
                     +"<div class='profile'>"
                     + element.name
                     + ": " 
                     + element.username 
                     + "</div>"
+                    + (cur_user_profile ? unfollow : "")
                 +"</div>"
         });
         $('#following').html(html);
@@ -140,7 +145,16 @@ $(document).ready(()=>{
                     
                 })
                 get_following(user,true).then((results)=>{
-        
+                    $('.unfollow').on('click', function(){
+                        var data = parseInt($(this).attr('user-id'));
+                        var parent = $(this).parent()
+                        console.log(data, current_user.user_id);
+                        unfollow(data, current_user.user_id).then((results)=>{
+                            console.log(results);
+                            console.log("USER_ID: ",user_id, "\t unfollows: ", data);
+                        });
+                        parent.remove()
+                    })
                 })
                 get_user_timeline(user, true).then((results)=>{
                     setTweetAttr(current_user)

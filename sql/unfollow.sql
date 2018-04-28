@@ -1,0 +1,1 @@
+DELETE FROM followers WHERE followers.user_id = ? AND followers.follower_id = ?

@@ -75,7 +75,9 @@ async function find_new_followers(user_id)
         html += "<div class='follow' data-profile='"
                 + element.user_id
                 + "'>"
-                    +"<div class='profile'><span class='user-name'>"
+                    +"<div class='profile' data-profile='"
+                    + element.user_id
+                    + "'><span class='user-name'>"
                     + element.name
                     + "</span>: @" 
                     + element.username 
@@ -121,14 +123,15 @@ $(document).ready(()=>{
             find_new_followers(user.user_id).then((results)=>{
                 $('.to_follow').click(function(event){
                     var data = parseInt($(this).attr('data-follow'));
-                    console.log(data);
-                    
+                    var parent = $(this).parent()
+                    //console.log(data);
                     follow(user_id, data).then((results)=>{
                         console.log(results);
                         console.log("USER_ID: ",user_id, "\t now follows: ", event.target.id);
                     });
+                    parent.remove()
                 });
-                $(".follow").on('click', function(event){
+                $(".profile").on('click', function(event){
                     profileID = parseInt($(this).attr('data-profile'));
                     ipcRenderer.send('user-info', [user.user_id, profileID]);
                     window.location.replace(path.join(__dirname, "/html/profile.html"));
@@ -156,7 +159,7 @@ $(document).ready(()=>{
     $('#login').on('click',()=>{
         launch_login()
     })
-    $('.profile').on('click', function(event){
+    $('.user-profile').on('click', function(event){
         event.preventDefault()
         ipcRenderer.send('user-info', [user.user_id, user.user_id]);
         window.location.replace(path.join(__dirname, "/html/profile.html"));
@@ -182,11 +185,5 @@ ipcRenderer.on('update-timeline', (event,arg)=>{
 
 //WINDOW PROCESS
 win.on('close', ()=>{
-<<<<<<< HEAD
     win = null;
 })
-=======
-
-})
-
->>>>>>> 6df91570d572fd56cd75ebea8efd50cf4ec8d4e0

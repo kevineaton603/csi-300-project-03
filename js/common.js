@@ -252,3 +252,9 @@ function setUserAttr(user)
     
     $("#user").html(html)
 }
+async function unfollow(user_id, follower_id)
+{
+    const unfollow_sql = await fileToStr('sql/unfollow.sql');
+    const unfollow_results = await query(unfollow_sql, [user_id, follower_id]);
+    return unfollow_results;
+}
