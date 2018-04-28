@@ -20,6 +20,10 @@ SET time_zone = "+00:00";
 -- Database: `twitter`
 --
 
+DROP DATABASE IF EXISTS twitter;
+CREATE DATABASE twitter;
+USE twitter;
+
 DELIMITER $$
 --
 -- Procedures
