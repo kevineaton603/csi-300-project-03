@@ -246,7 +246,7 @@ function setUserAttr(user)
             + user.following.length
             + "</div>"
             + "<div id='profile-tweets'>Tweets<br>"
-            + user.tweets
+            + user.tweets.length
             + "</div>";
     console.log(html);
     

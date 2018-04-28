@@ -32,6 +32,12 @@ nav {
     width: 80vw;
 }
 
+.card {
+    margin: 5px;
+    padding: 5px;
+    background: white;
+}
+
 #container button {
     border: none;
     background: inherit;
@@ -116,7 +122,7 @@ nav {
     font-size: 1.1em;
 }
 
-.follow .to_follow {
+.follow .to_follow, .following .follow .unfollow {
     display: flex;
     height: 20px;
     border-radius: 100px;
@@ -133,7 +139,7 @@ nav {
     padding-bottom: 10px;
 }
 
-.to_follow .text {
+.to_follow .text, .unfollow {
     display: flex;
     align-self: center;
     font-size: .8em;
@@ -144,3 +150,14 @@ nav {
 .follow .to_follow:hover {
     background-color: #E5F2F7
 }
+
+#user #profile-name {
+    color: #14171a;
+    font-weight: bold;
+}
+
+#user #profile-username {
+    color: #657786;
+    font-size: 12px;
+}
+
