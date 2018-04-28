@@ -13,6 +13,8 @@ A twitter clone for CSI-300-01
 * jQuery  
     `npm install jquery`
 
+Run: `sql/twitter_db.sql` to add twitter database 
+
 ## Running
 
 * `npm start`
